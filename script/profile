@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-export _install="$shome/install/${OSTYPE}"
+export _install="${shome:=$HOME}/install/${OSTYPE}"
 
 export PATH="${_install}/bin:$PATH"
