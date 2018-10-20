@@ -3,6 +3,25 @@
 function main {
   read shome <<< "$(cd -P -- "${BASH_SOURCE%/*}/.." && pwd -P)"
   source "$shome/script/profile"
+
+  mkdir -p "$_install/bin"
+
+  pushd "$_install/bin" >/dev/null
+
+  case "${OSTYPE}" in
+    linux*)
+        curl -sSL -o powerline-go \
+          https://github.com/justjanne/powerline-go/releases/download/v1.11.0/powerline-go-linux-amd64
+      ;;
+    darwin*)
+        curl -sSL -o powerline-go \
+          https://github.com/justjanne/powerline-go/releases/download/v1.11.0/powerline-go-darwin-amd64
+      ;;
+  esac
+
+  chmod 755 powerline-go
+
+  popd >/dev/null
 }
 
 main "$@"
