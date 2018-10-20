@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
 
-export _install="${shome:=$HOME}/install/${OSTYPE}"
+function adjust_ps1 {
+  perl -pe 's{(\\\$)([^\$]+?)$}{ $1 $2}s'
+}
+
+function render_ps1 {
+  echo
+  powerline-go -error $? --colorize-hostname -cwd-mode plain -mode flat -newline -numeric-exit-codes \
+    -priority root,cwd,user,host,ssh,perms,git-branch,jobs,exit,cwd-path,git-status \
+    -modules user,host,ssh,cwd,perms,gitlite,jobs,exit${TMUX_PANE:+,shell-var --shell-var TMUX_PANE}
+}
+
+function update_ps1 {
+  PS1="$(render_ps1 | adjust_ps1)"
+}
+
+if [[ -z "${shome:-}" ]]; then
+  read shome <<< "$(cd -P -- "${BASH_SOURCE%/*}/.." && pwd -P)"
+fi
+
+export _install="$shome/install/${OSTYPE%%.*}"
 
 export PATH="${_install}/bin:$PATH"
+
+PROMPT_COMMAND="update_ps1"
